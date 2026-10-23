@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZALR registry interface mockup</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:15px;color:#12263A;background:#F3F5F7}
+.app{display:flex;flex-wrap:wrap;min-height:100vh}
+.side{flex:0 0 232px;background:#12263A;color:#E6EDF3;padding:28px 20px;display:flex;flex-direction:column;gap:28px}
+.brand-name{font-size:22px;font-weight:600;letter-spacing:1px}
+.brand-sub{font-size:13px;color:#B9C7D3;line-height:1.4;margin-top:4px}
+.nav{display:flex;flex-direction:column;gap:4px}
+.nav a{display:block;padding:10px 12px;border-radius:8px;color:#DDE5EC;text-decoration:none}
+.nav a.active{background:#24405C;color:#FFFFFF;font-weight:500}
+.nav a:focus-visible{outline:2px solid #FFFFFF;outline-offset:2px}
+.spacer{flex:1}
+.meta{font-size:13px;color:#B9C7D3;line-height:1.5}
+main{flex:999 1 640px;min-width:0;padding:32px 40px}
+.view{display:none;flex-direction:column;gap:24px}
+.view.active{display:flex}
+h1{margin:0;font-size:30px;font-weight:600}
+h2{margin:0;font-size:20px;font-weight:600}
+.head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:16px}
+.sub{margin:6px 0 0;color:#566573}
+.sample{padding:6px 12px;border-radius:999px;background:#FBEDE5;color:#9A3B14;font-size:13px;font-weight:500}
+.card{background:#FFFFFF;border:1px solid #DDE3E8;border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:16px}
+.card.restricted{background:#EEF3F7;border-color:#9FB0BF}
+.row{display:flex;flex-wrap:wrap;gap:16px}
+.col{flex:1 1 220px}
+.col.s{flex:1 1 160px}
+.cols{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
+.stack{display:flex;flex-direction:column;gap:24px;min-width:0}
+.tile{flex:1 1 200px;background:#FFFFFF;border:1px solid #DDE3E8;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:4px}
+.tile .l{font-size:14px;color:#566573}
+.tile .n{font-size:40px;font-weight:600;line-height:1.1}
+.tile .s{font-size:13px;color:#566573}
+.tile.alert{background:#FBEDE5;border-color:#F0CDB9}
+.tile.alert .l,.tile.alert .n,.tile.alert .s{color:#7A3012}
+.chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:13px;font-weight:500}
+.c-ok{background:#E4F2EC;color:#1E6B52}
+.c-warn{background:#FBEDE5;color:#9A3B14}
+.c-neu{background:#EAEFF3;color:#33485A}
+.btn{display:inline-block;padding:12px 20px;border-radius:8px;border:1px solid #0E6B73;font-weight:500;font-family:inherit;font-size:15px;cursor:pointer;text-decoration:none}
+.btn.primary{background:#0E6B73;color:#FFFFFF}
+.btn.secondary{background:#FFFFFF;color:#0E6B73}
+.btn.sm{padding:8px 14px;font-size:14px}
+.btn.danger{background:#FFFFFF;color:#9A3B14;border-color:#9A3B14;padding:10px 16px;font-size:14px}
+.btn:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #0E6B73;outline-offset:2px}
+.scroll-x{overflow-x:auto}
+table{border-collapse:collapse;width:100%}
+th{text-align:left;font-weight:600;font-size:13px;color:#566573;padding:10px 12px;border-bottom:1px solid #DDE3E8}
+td{padding:12px;border-bottom:1px solid #EEF1F4;font-size:14px}
+label.f{display:block;font-size:13px;font-weight:500;color:#33485A;margin-bottom:6px}
+label.check{display:flex;align-items:center;gap:8px;margin:0;font-size:15px;font-weight:400;color:#12263A}
+input[type=text],input[type=number],input[type=date],select{width:100%;padding:10px 12px;border:1px solid #9FB0BF;border-radius:8px;background:#FFFFFF;color:#12263A;font-family:inherit;font-size:15px}
+input[readonly]{background:#F3F5F7}
+fieldset{margin:0;padding:0;border:0;min-width:0}
+legend{padding:0;margin-bottom:8px;font-size:13px;font-weight:500;color:#33485A}
+.note{margin:0;font-size:13px;color:#566573;line-height:1.5}
+.fu{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-bottom:12px;border-bottom:1px solid #EEF1F4}
+.fu:last-child{border-bottom:0;padding-bottom:0}
+.fu b{font-weight:500}
+.fu small{display:block;font-size:13px;color:#566573}
+.bar{display:flex;flex-direction:column;gap:6px}
+.bar .t{display:flex;justify-content:space-between;font-size:14px}
+.bar .t span+span{color:#566573}
+.bar .track{height:8px;border-radius:4px;background:#E6EBEF}
+.bar .fill{height:8px;border-radius:4px;background:#0E6B73}
+.bar .fill.low{background:#B5471B}
+.steps{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:12px}
+.steps li{flex:1 1 180px;padding:12px 16px;border-radius:10px;background:#E6EBEF;color:#33485A}
+.steps li.done{background:#E4F2EC;color:#1E6B52;font-weight:500}
+.steps li.now{background:#0E6B73;color:#FFFFFF;font-weight:500}
+.layer{background:#FFFFFF;border:1px solid #DDE3E8;border-radius:12px;padding:20px 24px;display:flex;flex-direction:column;gap:6px}
+.layer.hiv{background:#EEF3F7;border-color:#9FB0BF}
+.layer .tag{font-size:13px;font-weight:600;color:#0E6B73}
+.layer.hiv .tag{color:#33485A}
+.layer label{display:flex;align-items:flex-start;gap:12px;font-size:16px;line-height:1.5}
+.layer input{margin-top:4px}
+.layer .hint{font-size:13px;color:#566573;padding-left:28px}
+.status{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.banner{padding:14px 18px;border-radius:10px;background:#FBEDE5;border:1px solid #F0CDB9;color:#7A3012;font-size:14px;line-height:1.5}
+.lock{display:flex;align-items:center;gap:10px}
+.actions{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px}
+.pair{display:flex;gap:12px}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+<div>
+<div class="brand-name">ZALR</div>
+<div class="brand-sub">Zambian Acute Leukemia Registry</div>
+</div>
+<nav class="nav" aria-label="Main">
+<a href="#dashboard" data-view="dashboard">Dashboard</a>
+<a href="#newcase" data-view="newcase">New case</a>
+<a href="#consent" data-view="consent">Consent</a>
+<a href="#samples" data-view="samples">Samples</a>
+</nav>
+<div class="spacer"></div>
+<div class="meta">Site: UTH, Lusaka<br>Role: Site coordinator</div>
+</aside>
+<main>
+
+<!-- 1 DASHBOARD -->
+<section id="view-dashboard" class="view">
+<div class="head">
+<div>
+<h1>Site dashboard</h1>
+<p class="sub">University Teaching Hospital, Lusaka · last 90 days</p>
+</div>
+<span class="sample">Sample data, illustrative only</span>
+</div>
+<div class="row">
+<div class="tile"><div class="l">Cases enrolled</div><div class="n">27</div><div class="s">at this site</div></div>
+<div class="tile"><div class="l">Consent recorded</div><div class="n">25 of 27</div><div class="s">2 still to complete</div></div>
+<div class="tile"><div class="l">Lineage confirmed</div><div class="n">9 of 27</div><div class="s">by flow or cytochemistry</div></div>
+<div class="tile alert"><div class="l">Follow-up overdue</div><div class="n">6</div><div class="s">patients to call this week</div></div>
+</div>
+<div class="cols">
+<div class="card" style="flex:2 1 560px;min-width:0;gap:12px">
+<div class="status"><h2>Recent cases</h2><a class="btn primary sm" href="#newcase">New case</a></div>
+<div class="scroll-x">
+<table>
+<tr><th>Registry ID</th><th>Presented</th><th>Age</th><th>Sex</th><th>Morphology</th><th>Lineage test</th><th>Consent</th><th>Status</th></tr>
+<tr><td>ZALR-UTH-0027</td><td>19 Oct</td><td>7 y</td><td>F</td><td>ALL</td><td>Flow</td><td>Layers 1 to 4</td><td><span class="chip c-neu">Enrolled</span></td></tr>
+<tr><td>ZALR-UTH-0026</td><td>17 Oct</td><td>52 y</td><td>M</td><td>AML</td><td>Not done: no reagent</td><td>Layers 1 to 2</td><td><span class="chip c-ok">Induction</span></td></tr>
+<tr><td>ZALR-UTH-0025</td><td>15 Oct</td><td>31 y</td><td>F</td><td>AML</td><td>Not done: no sample</td><td>Layers 1 to 3</td><td><span class="chip c-ok">Induction</span></td></tr>
+<tr><td>ZALR-UTH-0024</td><td>14 Oct</td><td>4 y</td><td>M</td><td>ALL</td><td>Flow</td><td>Layers 1 to 4</td><td><span class="chip c-warn">Follow-up due</span></td></tr>
+<tr><td>ZALR-UTH-0023</td><td>12 Oct</td><td>63 y</td><td>M</td><td>AML</td><td>Cytochemistry</td><td>Layer 1</td><td><span class="chip c-neu">Early death</span></td></tr>
+<tr><td>ZALR-UTH-0022</td><td>9 Oct</td><td>12 y</td><td>F</td><td>ALL</td><td>Not done: patient died</td><td>Layers 1 to 2</td><td><span class="chip c-warn">Follow-up due</span></td></tr>
+<tr><td>ZALR-UTH-0021</td><td>7 Oct</td><td>28 y</td><td>M</td><td>AML</td><td>Not done: no reagent</td><td>Layers 1 to 4</td><td><span class="chip c-ok">Induction</span></td></tr>
+</table>
+</div>
+<p class="note">Cases show registry IDs only. HIV status is restricted to the treating team and is not shown here.</p>
+</div>
+<div class="stack" style="flex:1 1 320px">
+<div class="card" style="gap:14px">
+<h2>Follow-up due</h2>
+<div class="fu"><div><b>ZALR-UTH-0014</b><small>Last contact 28 Aug, 53 days ago</small></div><button class="btn secondary sm" type="button">Call</button></div>
+<div class="fu"><div><b>ZALR-UTH-0009</b><small>Last contact 2 Sep, 48 days ago</small></div><button class="btn secondary sm" type="button">Call</button></div>
+<div class="fu"><div><b>ZALR-UTH-0019</b><small>Last contact 18 Sep, 32 days ago</small></div><button class="btn secondary sm" type="button">Call</button></div>
+<div class="fu"><div><b>ZALR-UTH-0011</b><small>Last contact 24 Sep, 26 days ago</small></div><button class="btn secondary sm" type="button">Call</button></div>
+</div>
+<div class="card" style="gap:14px">
+<h2>Data completeness</h2>
+<div class="bar"><div class="t"><span>CBC</span><span>27 of 27</span></div><div class="track"><div class="fill" style="width:100%"></div></div></div>
+<div class="bar"><div class="t"><span>District of residence</span><span>26 of 27</span></div><div class="track"><div class="fill" style="width:96%"></div></div></div>
+<div class="bar"><div class="t"><span>Symptom onset date</span><span>18 of 27</span></div><div class="track"><div class="fill" style="width:67%"></div></div></div>
+<div class="bar"><div class="t"><span>Performance status</span><span>14 of 27</span></div><div class="track"><div class="fill low" style="width:52%"></div></div></div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- 2 NEW CASE -->
+<section id="view-newcase" class="view">
+<div class="head">
+<div>
+<h1>New case</h1>
+<p class="sub">Registry ID ZALR-UTH-0028 · fields marked * are required</p>
+</div>
+<span class="sample">Sample data, illustrative only</span>
+</div>
+<ol class="steps">
+<li class="done">1 Consent: done</li>
+<li class="now">2 Clinical data</li>
+<li>3 Diagnostics</li>
+<li>4 Treatment</li>
+</ol>
+<div class="card">
+<h2>Case details</h2>
+<div class="row">
+<div class="col"><label class="f" for="rid">Registry ID</label><input id="rid" type="text" value="ZALR-UTH-0028" readonly></div>
+<div class="col"><label class="f" for="site">Site *</label><select id="site"><option>UTH, Lusaka</option><option>CDH, Lusaka</option></select></div>
+<div class="col"><label class="f" for="dop">Date of presentation *</label><input id="dop" type="date" value="2026-10-21"></div>
+</div>
+<div class="row">
+<div class="col"><label class="f" for="age">Age *</label><div style="display:flex;gap:8px"><input id="age" type="number" value="34"><select aria-label="Age unit" style="width:110px"><option>years</option><option>months</option></select></div></div>
+<div class="col"><label class="f" for="sex">Sex *</label><select id="sex"><option>Select</option><option>Female</option><option>Male</option></select></div>
+<div class="col"><label class="f" for="ref">Referral route *</label><select id="ref"><option>Self</option><option>Clinic</option><option>Other hospital</option><option>Other</option></select></div>
+</div>
+<div class="row">
+<div class="col"><label class="f" for="prov">Province *</label><select id="prov"><option>Select</option><option>Lusaka</option></select></div>
+<div class="col"><label class="f" for="dist">District *</label><input id="dist" type="text" placeholder="Start typing a district"></div>
+<div class="col"></div>
+</div>
+</div>
+<div class="card">
+<h2>Presentation</h2>
+<div class="row">
+<div class="col"><label class="f" for="onset">Symptom onset date</label><input id="onset" type="date"></div>
+<div class="col"><label class="f" for="ps">Performance status (Lansky or ECOG)</label><select id="ps"><option>Select</option></select></div>
+<div class="col"></div>
+</div>
+<fieldset>
+<legend>Presenting features *</legend>
+<div style="display:flex;flex-wrap:wrap;gap:8px 24px">
+<label class="check"><input type="checkbox" checked> Fever</label>
+<label class="check"><input type="checkbox"> Bleeding</label>
+<label class="check"><input type="checkbox" checked> Pallor</label>
+<label class="check"><input type="checkbox"> Hepatosplenomegaly</label>
+<label class="check"><input type="checkbox"> Lymphadenopathy</label>
+<label class="check"><input type="checkbox"> CNS signs</label>
+</div>
+</fieldset>
+<div class="row">
+<div class="col s"><label class="f" for="hb">Haemoglobin (g/dL) *</label><input id="hb" type="number" value="7.2"></div>
+<div class="col s"><label class="f" for="wbc">WBC (×10⁹/L) *</label><input id="wbc" type="number" value="48"></div>
+<div class="col s"><label class="f" for="plt">Platelets (×10⁹/L) *</label><input id="plt" type="number" value="22"></div>
+<div class="col s"><label class="f" for="blast">Blasts (% of WBC) *</label><input id="blast" type="number" value="61"></div>
+</div>
+</div>
+<div class="card">
+<h2>Diagnosis</h2>
+<div class="row">
+<div class="col"><label class="f" for="morph">Morphology diagnosis *</label><select id="morph"><option>AML</option><option>ALL</option><option>Other</option><option>Unclassified</option></select></div>
+<div class="col"><label class="f" for="lin">Lineage confirmation *</label><select id="lin"><option>Not done</option><option>Flow cytometry</option><option>Cytochemistry</option></select></div>
+<div class="col"><label class="f" for="linr">Reason not done *</label><select id="linr"><option>No reagent</option><option>No sample</option><option>Patient died</option><option>Not requested</option><option>Other</option></select></div>
+</div>
+<div class="row">
+<div class="col"><label class="f" for="cyt">Cytogenetics and molecular</label><select id="cyt"><option>Not done</option><option>Result available</option></select></div>
+<div class="col"><label class="f" for="cytr">Reason not done</label><select id="cytr"><option>Not requested</option><option>No reagent</option><option>No sample</option><option>Patient died</option><option>Other</option></select></div>
+<div class="col"><label class="f" for="intent">Treatment intent *</label><select id="intent"><option>Curative</option><option>Palliative</option><option>None</option></select></div>
+</div>
+</div>
+<div class="card restricted">
+<div class="lock">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#12263A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+<h2>HIV status (restricted)</h2>
+</div>
+<p style="margin:0;font-size:14px;line-height:1.5;color:#33485A">Visible only to the treating team and the registry lead. Record what routine care has already established; the registry never orders a test.</p>
+<div class="row">
+<div class="col s"><label class="f" for="hiv">Result *</label><select id="hiv"><option>Not tested</option><option>Positive</option><option>Negative</option><option>Unknown</option></select></div>
+<div class="col s"><label class="f" for="hivd">Test date</label><input id="hivd" type="date"></div>
+<div class="col s"><label class="f" for="art">On antiretroviral therapy</label><select id="art"><option>Unknown</option><option>Yes</option><option>No</option></select></div>
+<div class="col s"><label class="f" for="cd4">CD4 count, if available</label><input id="cd4" type="number"></div>
+</div>
+</div>
+<div class="actions">
+<p class="note" style="font-size:14px">Draft autosaved on this tablet. Syncs when the connection returns.</p>
+<div class="pair">
+<button class="btn secondary" type="button">Save draft</button>
+<a class="btn primary" href="#consent">Save and continue</a>
+</div>
+</div>
+</section>
+
+<!-- 3 CONSENT -->
+<section id="view-consent" class="view">
+<div class="head">
+<div>
+<h1>Consent</h1>
+<p class="sub">Registry ID ZALR-UTH-0028 · each layer is a separate choice</p>
+</div>
+<span class="sample">Sample data, illustrative only</span>
+</div>
+<div class="cols">
+<div class="stack" style="flex:2 1 520px;gap:16px">
+<div class="layer">
+<div class="tag">LAYER 1 · REQUIRED TO JOIN</div>
+<label><input type="checkbox" checked disabled>My clinical information may be recorded in the Zambian Acute Leukemia Registry.</label>
+<div class="hint">If you decline, you are not enrolled. Your care is not affected.</div>
+</div>
+<div class="layer">
+<div class="tag">LAYER 2 · SAMPLE STORAGE</div>
+<label><input id="c2" type="checkbox" checked>An extra sample may be taken when my blood or marrow is collected for care, and stored at this hospital.</label>
+<div class="hint">If you decline, no research sample is taken.</div>
+</div>
+<div class="layer">
+<div class="tag">LAYER 3 · RESEARCH USE</div>
+<label><input id="c3" type="checkbox" checked>My coded data and stored sample may be used in research studies approved by an ethics committee.</label>
+<div class="hint">If you decline, your data stay in the registry and are left out of research exports.</div>
+</div>
+<div class="layer">
+<div class="tag">LAYER 4 · SENDING ABROAD</div>
+<label><input id="c4" type="checkbox">My coded data and sample may be sent to the named partner laboratories outside Zambia: [Partner lab 1], [Partner lab 2].</label>
+<div class="hint">If you decline, everything stays in Zambia.</div>
+</div>
+<div class="layer hiv">
+<div class="tag">SEPARATE ITEM · HIV STATUS</div>
+<label><input type="checkbox" checked>My HIV status, if already known from my routine care, may be recorded in the registry.</label>
+<div class="hint">Only the treating team and the registry lead can see it. You can decline this item and still join.</div>
+</div>
+</div>
+<div class="stack" style="flex:1 1 320px">
+<div class="card">
+<h2>Who is consenting</h2>
+<fieldset style="display:flex;flex-direction:column;gap:8px">
+<legend>Signer *</legend>
+<label class="check"><input type="radio" name="signer" checked> The patient</label>
+<label class="check"><input type="radio" name="signer"> Parent or guardian (child under 18)</label>
+<label class="check"><input type="checkbox"> Child has given assent</label>
+</fieldset>
+<div><label class="f" for="lang">Language of explanation *</label><select id="lang"><option>English</option><option>Bemba</option><option>Nyanja</option><option>Tonga</option><option>Lozi</option></select></div>
+<div><label class="f" for="wit">Witness name (if the signer cannot read)</label><input id="wit" type="text"></div>
+<div><label class="f" for="cd">Date of consent *</label><input id="cd" type="date" value="2026-10-21"></div>
+<button class="btn primary" type="button">Save consent</button>
+<button class="btn danger" type="button">Record withdrawal of consent</button>
+</div>
+<div class="card" style="gap:12px">
+<h2>What this unlocks</h2>
+<div class="status"><span>Registry entry</span><span class="chip c-ok">Allowed</span></div>
+<div class="status"><span>Research sample stored</span><span id="u-sample" class="chip c-ok">Allowed</span></div>
+<div class="status"><span>Data in research exports</span><span id="u-export" class="chip c-ok">Allowed</span></div>
+<div class="status"><span>Shipment abroad</span><span id="u-ship" class="chip c-warn">Blocked: layer 4 not agreed</span></div>
+<p class="note">Tick or untick layers 2 to 4 to see the effect.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- 4 SAMPLES -->
+<section id="view-samples" class="view">
+<div class="head">
+<div>
+<h1>Samples and shipment</h1>
+<p class="sub">Research aliquots stored at UTH, Lusaka</p>
+</div>
+<span class="sample">Sample data, illustrative only</span>
+</div>
+<div class="banner">Consent gate: an aliquot without export consent (layer 4) is locked and cannot be added to a manifest.</div>
+<div class="cols">
+<div class="card" style="flex:2 1 560px;min-width:0;gap:12px">
+<h2>Research aliquots</h2>
+<div class="scroll-x">
+<table>
+<tr><th>Select</th><th>Aliquot ID</th><th>Type</th><th>Collected</th><th>Location</th><th>Export consent</th><th>Status</th></tr>
+<tr><td><input class="sel" type="checkbox" checked aria-label="Select ZALR-UTH-0027-R1"></td><td>ZALR-UTH-0027-R1</td><td>Marrow, EDTA</td><td>19 Oct, 09:40</td><td>Freezer A · rack 2 · box 3 · 14</td><td>Yes</td><td><span class="chip c-ok">Ready to ship</span></td></tr>
+<tr><td><input class="sel" type="checkbox" checked aria-label="Select ZALR-UTH-0024-R1"></td><td>ZALR-UTH-0024-R1</td><td>Blood, EDTA</td><td>14 Oct, 11:05</td><td>Freezer A · rack 2 · box 3 · 15</td><td>Yes</td><td><span class="chip c-ok">Ready to ship</span></td></tr>
+<tr><td><input class="sel" type="checkbox" checked aria-label="Select ZALR-UTH-0021-R1"></td><td>ZALR-UTH-0021-R1</td><td>Blood, EDTA</td><td>7 Oct, 08:50</td><td>Freezer A · rack 2 · box 3 · 16</td><td>Yes</td><td><span class="chip c-ok">Ready to ship</span></td></tr>
+<tr><td><input type="checkbox" disabled aria-label="ZALR-UTH-0025-R1 locked"></td><td>ZALR-UTH-0025-R1</td><td>Blood, EDTA</td><td>15 Oct, 10:20</td><td>Freezer A · rack 2 · box 4 · 2</td><td>No</td><td><span class="chip c-warn">Locked: no export consent</span></td></tr>
+<tr><td><input type="checkbox" disabled aria-label="ZALR-UTH-0022-R1 locked"></td><td>ZALR-UTH-0022-R1</td><td>Blood, EDTA</td><td>9 Oct, 14:15</td><td>Freezer A · rack 2 · box 4 · 3</td><td>No</td><td><span class="chip c-warn">Locked: no export consent</span></td></tr>
+</table>
+</div>
+<p class="note">Each aliquot has its own barcode, linked to the registry ID. Storage conditions follow the partner laboratory's protocol [to be agreed].</p>
+</div>
+<div class="card" style="flex:1 1 320px;min-width:0">
+<h2>Shipment manifest</h2>
+<div><label class="f" for="dest">Destination laboratory *</label><select id="dest"><option>[Partner lab 1]</option><option>[Partner lab 2]</option></select></div>
+<div class="status"><span>Aliquots selected</span><b id="sel-count">3</b></div>
+<div class="status"><span>Aliquots locked</span><b style="color:#9A3B14">2</b></div>
+<div class="status"><span>Material transfer agreement</span><span class="chip c-ok">On file: [MTA reference]</span></div>
+<p class="note">Two aliquots cannot be shipped because export consent is not recorded for their cases.</p>
+<button id="manifest-btn" class="btn primary" type="button">Create manifest for 3 aliquots</button>
+</div>
+</div>
+</section>
+
+</main>
+</div>
+<script>
+(function () {
+  var views = ['dashboard', 'newcase', 'consent', 'samples'];
+  function show(id) {
+    if (views.indexOf(id) < 0) id = 'dashboard';
+    views.forEach(function (v) {
+      document.getElementById('view-' + v).classList.toggle('active', v === id);
+    });
+    var links = document.querySelectorAll('.nav a');
+    for (var i = 0; i < links.length; i++) {
+      links[i].classList.toggle('active', links[i].getAttribute('data-view') === id);
+    }
+    window.scrollTo(0, 0);
+  }
+  function route() { show(location.hash.replace('#', '')); }
+  window.addEventListener('hashchange', route);
+  route();
+
+  function setChip(id, ok, okText, noText) {
+    var el = document.getElementById(id);
+    el.className = 'chip ' + (ok ? 'c-ok' : 'c-warn');
+    el.textContent = ok ? okText : noText;
+  }
+  function updateConsent() {
+    setChip('u-sample', document.getElementById('c2').checked, 'Allowed', 'Not allowed: layer 2 declined');
+    setChip('u-export', document.getElementById('c3').checked, 'Allowed', 'Excluded: layer 3 declined');
+    setChip('u-ship', document.getElementById('c4').checked, 'Allowed to named labs', 'Blocked: layer 4 not agreed');
+  }
+  ['c2', 'c3', 'c4'].forEach(function (id) {
+    document.getElementById(id).addEventListener('change', updateConsent);
+  });
+  updateConsent();
+
+  function updateManifest() {
+    var n = document.querySelectorAll('.sel:checked').length;
+    document.getElementById('sel-count').textContent = n;
+    var btn = document.getElementById('manifest-btn');
+    btn.textContent = 'Create manifest for ' + n + ' aliquot' + (n === 1 ? '' : 's');
+    btn.disabled = n === 0;
+    btn.style.opacity = n === 0 ? '0.5' : '1';
+  }
+  var sels = document.querySelectorAll('.sel');
+  for (var j = 0; j < sels.length; j++) sels[j].addEventListener('change', updateManifest);
+  updateManifest();
+})();
+</script>
+</body>
+</html>
