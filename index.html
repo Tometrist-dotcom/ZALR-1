@@ -185,7 +185,22 @@ legend{padding:0;margin-bottom:8px;font-size:13px;font-weight:500;color:#33485A}
 <div class="col"><label class="f" for="ref">Referral route *</label><select id="ref"><option>Self</option><option>Clinic</option><option>Other hospital</option><option>Other</option></select></div>
 </div>
 <div class="row">
-<div class="col"><label class="f" for="prov">Province *</label><select id="prov"><option>Select</option><option>Lusaka</option></select></div>
+<div class="col">
+    <label class="f" for="prov">Province *</label>
+    <select id="prov" required>
+        <option value="" disabled selected>Select Province</option>
+        <option value="Central">Central</option>
+        <option value="Copperbelt">Copperbelt</option>
+        <option value="Eastern">Eastern</option>
+        <option value="Luapula">Luapula</option>
+        <option value="Lusaka">Lusaka</option>
+        <option value="Muchinga">Muchinga</option>
+        <option value="Northern">Northern</option>
+        <option value="North-Western">North-Western</option>
+        <option value="Southern">Southern</option>
+        <option value="Western">Western</option>
+    </select>
+</div>
 <div class="col"><label class="f" for="dist">District *</label><input id="dist" type="text" placeholder="Start typing a district"></div>
 <div class="col"></div>
 </div>
